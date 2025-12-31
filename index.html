@@ -4,11 +4,19 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AI Web Gallery</title>
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
 
-  <h1>AI Web Gallery</h1>
-  <div id="output">Loading…</div>
+  <nav class="navbar">
+    <div class="navbar-title">AI Web Gallery</div>
+
+    <div class="search-bar">
+      <input type="text" id="search-input" placeholder="Search websites..." />
+    </div>
+  </nav>
+
+  <div id="websites-grid" class="grid"></div>
 
   <script src="js/app.js"></script>
 </body>
