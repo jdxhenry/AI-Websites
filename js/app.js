@@ -3,13 +3,18 @@ let tools = [];
 document.addEventListener('DOMContentLoaded', () => {
   loadCSV();
 
-  document.getElementById('search-input').addEventListener('input', e => {
-    const q = e.target.value.toLowerCase();
-    render(tools.filter(t =>
-      t.name.toLowerCase().includes(q) ||
-      t.desc.toLowerCase().includes(q)
-    ));
-  });
+  const searchInput = document.getElementById('search-input');
+  if (searchInput) {
+    searchInput.addEventListener('input', e => {
+      const q = e.target.value.toLowerCase();
+      render(
+        tools.filter(t =>
+          t.name.toLowerCase().includes(q) ||
+          t.desc.toLowerCase().includes(q)
+        )
+      );
+    });
+  }
 });
 
 /* =========================
@@ -22,7 +27,7 @@ async function loadCSV() {
     const text = await res.text();
     parseCSV(text);
   } catch (err) {
-    console.error(err);
+    console.error('CSV load failed:', err);
   }
 }
 
@@ -35,6 +40,7 @@ function parseCSV(csv) {
 
   for (const line of lines) {
     if (!line.trim()) continue;
+
     const parts = line.split(',');
     if (parts.length < 2) continue;
 
@@ -50,7 +56,6 @@ function parseCSV(csv) {
     });
   }
 
-  tools.sort((a, b) => b.views - a.views);
   render(tools);
 }
 
@@ -59,9 +64,10 @@ function parseCSV(csv) {
 ========================= */
 function render(list) {
   const grid = document.getElementById('tools-grid');
+  if (!grid) return;
+
   grid.innerHTML = '';
 
-  // Sort by views (highest first)
   const sorted = [...list].sort((a, b) => b.views - a.views);
 
   sorted.forEach(tool => {
@@ -69,51 +75,51 @@ function render(list) {
   });
 }
 
+/* =========================
+   CARD
+========================= */
+function createCard(tool, grid) {
+  const card = document.createElement('div');
+  card.className = 'tool-card';
+  card.tabIndex = 0;
 
-  list.forEach(tool => {
-    const card = document.createElement('div');
-    card.className = 'tool-card';
-    card.tabIndex = 0; // keyboard accessible
+  card.innerHTML = `
+    <div class="tool-icon">
+      <img src="https://www.google.com/s2/favicons?domain=${new URL(tool.url).hostname}&sz=64">
+    </div>
 
-    card.innerHTML = `
-      <div class="tool-icon">
-        <img src="https://www.google.com/s2/favicons?domain=${new URL(tool.url).hostname}&sz=64">
+    <div class="tool-content">
+      <div class="tool-header">
+        <h3>${tool.name}</h3>
+        <a href="${tool.url}" class="external-link" target="_blank" aria-label="Open website">↗</a>
       </div>
+      <p class="tool-desc">${tool.desc}</p>
+      <div class="tool-meta">${tool.views} views</div>
+    </div>
+  `;
 
-      <div class="tool-content">
-        <div class="tool-header">
-          <h3>${tool.name}</h3>
-          <a href="${tool.url}" class="external-link" target="_blank" aria-label="Open website">↗</a>
-        </div>
-        <p class="tool-desc">${tool.desc}</p>
-        <div class="tool-meta">${tool.views} views</div>
-      </div>
-    `;
+  /* Card click */
+  card.addEventListener('click', () => {
+    incrementViews(tool.url);
+    window.open(tool.url, '_blank');
+  });
 
-    /* Entire card clickable */
-    card.addEventListener('click', () => {
+  /* Arrow click */
+  card.querySelector('.external-link').addEventListener('click', e => {
+    e.stopPropagation();
+    incrementViews(tool.url);
+  });
+
+  /* Keyboard support */
+  card.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
       incrementViews(tool.url);
       window.open(tool.url, '_blank');
-    });
-
-    /* Prevent double trigger from arrow */
-    card.querySelector('.external-link').addEventListener('click', e => {
-      e.stopPropagation();
-      incrementViews(tool.url);
-    });
-
-    /* Keyboard (Enter) support */
-    card.addEventListener('keydown', e => {
-      if (e.key === 'Enter') {
-        incrementViews(tool.url);
-        window.open(tool.url, '_blank');
-      }
-    });
-
-    grid.appendChild(card);
+    }
   });
-}
 
+  grid.appendChild(card);
+}
 
 /* =========================
    VIEWS
