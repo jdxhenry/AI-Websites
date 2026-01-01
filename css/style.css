@@ -248,3 +248,33 @@ body {
         font-size: 18px;
       }
     }
+	
+	/* ===== Category Dropdown ===== */
+
+#category-dropdown {
+  position: absolute;
+  top: 45px;
+  right: 0;
+  min-width: 160px;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  padding: 6px;
+  display: none;              /* IMPORTANT */
+  z-index: 9999;
+}
+
+#category-dropdown.show {
+  display: block;             /* IMPORTANT */
+}
+
+.category-item {
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.category-item:hover {
+  background: #f2f4f8;
+}
