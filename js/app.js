@@ -92,7 +92,7 @@ document.addEventListener('click', () => {
         const url = parts[1].trim();
         const desc = parts.slice(2).join(',').trim();
 
-        if (name && url) {
+        if (name && url && !websiteExists(url)) {
           addTile(name, url, desc, category);
           imported++;
         }
@@ -152,6 +152,16 @@ function parseCSV(csv) {
 }
 
 /* =========================
+   DUPLICATE CHECK
+========================= */
+
+function websiteExists(url) {
+  const normalizedUrl = url.trim().toLowerCase();
+  return Array.from(document.querySelectorAll('.website-tile'))
+    .some(tile => tile.dataset.url === normalizedUrl);
+}
+
+/* =========================
    TILE
 ========================= */
 
@@ -159,10 +169,12 @@ function addTile(name, url, desc, category) {
   const grid = document.getElementById('websites-grid');
 
   const tile = document.createElement('div');
-  tile.className = 'website-tile';
-  tile.dataset.name = name.toLowerCase();
-  tile.dataset.desc = desc.toLowerCase();
-  tile.dataset.category = category; // already normalized
+tile.className = 'website-tile';
+tile.dataset.name = name.toLowerCase();
+tile.dataset.desc = desc.toLowerCase();
+tile.dataset.category = category;
+tile.dataset.url = url.trim().toLowerCase(); // ✅ STORE URL
+
 
   tile.innerHTML = `
     <button class="remove-btn" onclick="removeTile(this)">×</button>
