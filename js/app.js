@@ -21,22 +21,38 @@ document.addEventListener('DOMContentLoaded', () => {
    CSV LOAD
 ========================= */
 async function loadCSV() {
+  const files = [
+    'data/ai-audio.csv',
+    'data/genai.csv'
+  ];
+
   try {
-    const res = await fetch('data/ai-audio.csv?ts=' + Date.now());
-    if (!res.ok) throw new Error('CSV not found');
-    const text = await res.text();
-    parseCSV(text);
+    const responses = await Promise.all(
+      files.map(f => fetch(f + '?ts=' + Date.now()))
+    );
+
+    const texts = await Promise.all(
+      responses.map(r => {
+        if (!r.ok) throw new Error('Failed to load CSV');
+        return r.text();
+      })
+    );
+
+    // Merge all CSV content
+    texts.forEach(text => parseCSV(text));
+
+    render(tools);
   } catch (err) {
     console.error('CSV load failed:', err);
   }
 }
+
 
 /* =========================
    PARSE
 ========================= */
 function parseCSV(csv) {
   const lines = csv.split(/\r?\n/).slice(1);
-  tools = [];
 
   for (const line of lines) {
     if (!line.trim()) continue;
@@ -48,16 +64,19 @@ function parseCSV(csv) {
     const url = parts[1].trim();
     const desc = parts.slice(2).join(',').trim();
 
-    tools.push({
-      name,
-      url,
-      desc,
-      views: getViews(url)
-    });
+    if (!tools.some(t => t.url === url)) {
+      tools.push({
+        name,
+        url,
+        desc,
+        views: getViews(url)
+      });
+    }
   }
-
-  render(tools);
 }
+
+
+
 
 /* =========================
    RENDER
