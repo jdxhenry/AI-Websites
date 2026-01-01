@@ -61,6 +61,15 @@ function render(list) {
   const grid = document.getElementById('tools-grid');
   grid.innerHTML = '';
 
+  // Sort by views (highest first)
+  const sorted = [...list].sort((a, b) => b.views - a.views);
+
+  sorted.forEach(tool => {
+    createCard(tool, grid);
+  });
+}
+
+
   list.forEach(tool => {
     const card = document.createElement('div');
     card.className = 'tool-card';
