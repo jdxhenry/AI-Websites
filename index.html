@@ -9,47 +9,14 @@
 
 <body>
   <nav class="navbar">
-    <div class="navbar-title">AI Web Gallery</div>
-
-    <div class="search-bar">
-      <input type="text" id="search-input" placeholder="Search websites..." />
-    </div>
-
-   
-
-    <div class="navbar-buttons">
-      <button id="import-btn" title="Import from CSV">↗</button>
-      <button id="category-btn" title="View by Category">⚙️</button>
-      <button id="add-btn" title="Add Website">+</button>
-      <div class="category-dropdown" id="category-dropdown"></div>
-    </div>
+    <h1>AI Web Gallery</h1>
+    <input type="text" id="search-input" placeholder="Search websites..." />
   </nav>
 
-  <div class="grid" id="websites-grid"></div>
+  <main>
+    <div id="tools-grid" class="tools-grid"></div>
+  </main>
 
-  <!-- Add Modal -->
-  <div class="modal" id="add-modal">
-    <div class="modal-content">
-      <h2>Add Website</h2>
-      <input type="text" id="website-name" placeholder="Website Name" />
-      <input type="url" id="website-url" placeholder="https://example.com" />
-      <input type="text" id="website-desc" placeholder="Description (optional)" />
-      <button id="save-btn">Save</button>
-      <button id="cancel-btn">Cancel</button>
-    </div>
-  </div>
-
-  <!-- Import Modal -->
-  <div class="modal" id="import-modal">
-    <div class="modal-content">
-      <h2>Import from CSV</h2>
-      <input type="file" id="csv-file" accept=".csv" />
-      <input type="text" id="import-category" placeholder="Category Name" />
-      <button id="import-save-btn">Import</button>
-      <button id="import-cancel-btn">Cancel</button>
-    </div>
-  </div>
-
-  <script src="js/app.js"></script>
+ <script src="js/app.js?v=2"></script>
 </body>
 </html>
